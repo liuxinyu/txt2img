@@ -2,6 +2,16 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.1'
 
+# Figure out how to get RMagick:
+rmagick_options = {:require => false}
+rmagick_options.update({
+  :git => 'git://github.com/refinerycms/rmagick.git',
+  :branch => 'windows'
+}) if Bundler::WINDOWS
+
+# Specify a version of RMagick that works in your environment:
+gem 'rmagick', '~> 2.12.0', rmagick_options
+
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 

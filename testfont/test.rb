@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'RMagick'
 imagename='txt2img.png'
-#img = Magick::ImageList.new(imagename)
 img = Magick::Image.new(400,200,Magick::HatchFill.new('green','green')) 
 gc= Magick::Draw.new
 gc.stroke('transparent') 

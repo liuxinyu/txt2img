@@ -1,32 +1,28 @@
-require 'rubygems'
-require 'RMagick'
-
 class HomeController < ApplicationController
   def index
-    @imagename='pic3.gif'
-     #img = Magick::Image.read('tmp.jpg').first
-     
-     # If you want to save this image use following
-      #img.write("mythumbnail.gif")
-     
-     img = Magick::ImageList.new("clown.jpg")
-     #img = Magick::Image.new(200,200,Magick::HatchFill.new('green','green')) 
-     # otherwise send it to the browser as follows
-     gc=Magick::Draw.new
-    # gc.stroke('red') 
-     gc.pointsize(28)
-     #gc.font('simhei.ttf')
-     gc.font='simkai.ttf'
-     gc.text(20,40,'生活真美好，')
-     #gc.font='simhei.ttf'
-     #gc.text(20,80,'你我共珍惜！')
-     #gc.font='STXINWEI.TTF'
-     #gc.text(20,120,'你我共珍惜！')
-     
-     gc.draw(img)
-     img.write("public/images/#@imagename")
-    # send_data(img.to_blob, :disposition => 'inline',:type => 'image/jpg')
+    images_path = "public/images"
+    file_name="txt2img.png"
+    file_path = images_path + "/"+ file_name
+    img = Magick::Image.new(400,200,Magick::HatchFill.new('transparent','transparent')) 
+    #img.opacity = 100
+    gc= Magick::Draw.new
+    gc.stroke('transparent') 
+    gc.pointsize(28)
+    gc.font='maozedong.ttf'
+    gc.text(20,100,"this is a sample 好好学习，天天向上。毛泽东")
+    gc.draw(img)
+    img.write(file_path)
+    @path = file_name
   end
+  def rmagick
+    images_path = "public/images"
+    file_name = "rmagick_generated_thumb.jpg"
+    file_path = images_path + "/"+ file_name
 
-
+    File.delete file_path if File.exists? file_path
+    img = Magick::Image.read("lib/sample_images/magic.jpg").first
+    thumb = img.scale(0.25)
+    @path = file_name
+    thumb.write file_path
+  end
 end
