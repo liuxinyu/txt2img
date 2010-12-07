@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'RMagick'
 
 class HomeController < ApplicationController
   def index
@@ -6,7 +8,7 @@ class HomeController < ApplicationController
      
      # If you want to save this image use following
       #img.write("mythumbnail.gif")
-     require 'RMagick'
+     
      img = Magick::ImageList.new("clown.jpg")
      #img = Magick::Image.new(200,200,Magick::HatchFill.new('green','green')) 
      # otherwise send it to the browser as follows
