@@ -44,17 +44,31 @@ class TxtsController < ApplicationController
 
     respond_to do |format|
       if @txt.save
+        #--- path and name
+        font_path = 'D:\\fonts'
         images_path = "public/images"
-        file_name=@txt.image_url
-        file_path = images_path + "/"+ file_name
-        img = Magick::Image.new(400,200,Magick::HatchFill.new('white','white')) 
-        gc= Magick::Draw.new
-        gc.stroke('transparent') 
-        gc.pointsize(22)
-        gc.font='maozedong.ttf'
-        gc.text(20,100,@txt.text)
-        gc.draw(img)
-        img.write(file_path)
+        output_path = 'public/images/outputs'
+        bg_image_path = images_path + "/"+ "background1.png"
+
+        require 'find'
+        
+        Find.find(font_path) do |f|
+          img = Magick::Image.read(bg_image_path).first    #图片路径
+          gc= Magick::Draw.new
+          gc.annotate(img, 0, 0, 250, 80, @txt.text) do  #可以设置文字的位置，参数分别为路径、宽度、高度、横坐标、纵坐标
+            #self.gravity = Magick::CenterGravity
+            self.font = f
+            #self.font_weight = Magick::BoldWeight      #粗体
+            self.pointsize = 22                         #字体的大小
+            self.fill = '#FFF'                         #字体的颜色
+            #self.gravity = Magick::SouthEastGravity
+            self.stroke = "none"
+          end          
+          font_file_name = File.basename(f, 'ttf')
+          file_path = output_path + "/"+ @txt.image_url + "_" + font_file_name + "png"  
+          img.write(file_path)  
+        end
+        
         #@path = file_name
         format.html { redirect_to(@txt, :notice => 'Txt was successfully created.') }
         format.xml  { render :xml => @txt, :status => :created, :location => @txt }
