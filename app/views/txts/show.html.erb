@@ -10,6 +10,11 @@
   <%= @txt.image_url %>
 </p>
 
+<p>
+  <b>Full text:</b>
+  <%= @txt.longtext %>
+</p>
+
 <%= image_tag @txt.image_url %>
 
 <%= link_to 'Edit', edit_txt_path(@txt) %> |
