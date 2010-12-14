@@ -1,6 +1,6 @@
 class TxtsController < ApplicationController
-      FONT_SIZE = 22
-    WIDTH = 400
+    FONT_SIZE = 25  # 字体大小
+    WIDTH = 350 # 设置文字显示区域的宽度，用于计算每行字数
     NUM_WORD_PER_LINE = (WIDTH/FONT_SIZE).round
     
   # GET /txts
@@ -50,8 +50,7 @@ class TxtsController < ApplicationController
     respond_to do |format|
       if @txt.save
         
-        # long text parser
-        
+        # long text parser        
         $KCODE='utf8'
         require 'jcode'
         d_str =''
@@ -67,22 +66,29 @@ class TxtsController < ApplicationController
           d_str += "\n"
         }
         
-        #--- path and name
+        #--- path and name. to be config/updated in new environments
         font_path = 'D:\\fonts'
         images_path = "public/images"
         output_path = 'public/images/outputs'
         bg_image_path = images_path + "/"+ "background.png"
 
         require 'find'
-        
+        # do the same thing for each available fonts
         Find.find(font_path) do |f|
           img = Magick::Image.read(bg_image_path).first    #图片路径
+          src_img = Magick::Image.read(images_path+'/user_image.JPG').first  # to be replaced with user's picture url
+          src_img.crop_resized!(320,320)  # 照片的目标尺寸
+          src_img.border!(10, 10, "#f0f0ff")    #相框的颜色，宽度
+          frame_img = Magick::Image.read(images_path+'/frame.png').first    # picture frame
+          frame_img.composite!(src_img, 0, 0, Magick::OverCompositeOp)
+          img.composite!(frame_img, 20, 20, Magick::OverCompositeOp)
+          
           gc= Magick::Draw.new
-          gc.annotate(img, 0, 0, 400, 50, d_str) do  #可以设置文字的位置，参数分别为路径、宽度、高度、横坐标、纵坐标
+          gc.annotate(img, 0, 0, 420, 50, d_str) do  #可以设置文字的位置，参数分别为路径、宽度、高度、横坐标、纵坐标
             #self.gravity = Magick::CenterGravity
             self.font = f
             self.pointsize = FONT_SIZE                 #字体的大小
-            self.fill = '#000'                         #字体的颜色
+            self.fill = '#fff'                         #字体的颜色
             self.stroke = "none"
           end          
           font_file_name = File.basename(f, 'ttf')
